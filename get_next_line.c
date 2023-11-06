@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/06 17:16:36 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/06 22:29:52 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,18 @@ void	*create_list(t_list **list, int fd)
 
 int	search_for_newline(t_list *list)
 {
-	char	current_node;
 	int		i;
 
-	i = 0;
-	current_node = list->content;
-	while ()
-	while (current_node[i])
+	while (list)
 	{
-		if (current_node[i] == '\n')
-			return (1);
-		i++;
+		i = 0;
+		while (list->content[i])
+		{
+			if (list->content[i] == '\n')
+				return (1);
+			i++;
+		}
+		list = list->next;
 	}
-
+	return (0);
 }
