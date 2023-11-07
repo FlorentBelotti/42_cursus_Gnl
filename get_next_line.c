@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/06 22:29:52 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/07 11:35:41 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	*create_list(t_list **list, int fd)
 	int		char_read;
 
 	char_read = 0;
-	new_node = malloc(size_of(t_list));
+	new_node = malloc(size_of(t_list)); // lst_new(buffer);
 	if (!new_node)
 		return (NULL);
 	char_read = read(fd, buffer, BUFFER_SIZE);
@@ -41,9 +41,9 @@ void	*create_list(t_list **list, int fd)
 		free(buffer);
 		return ;
 	}
-	buffer[char_read] = '\0';
+	/*buffer[char_read] = '\0';
 	new_node->content = buffer;
-	new_node->next = NULL;
+	new_node->next = NULL;*/
 }
 
 int	search_for_newline(t_list *list)
