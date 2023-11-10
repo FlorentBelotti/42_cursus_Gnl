@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:58 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/09 17:39:17 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/10 15:17:32 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	print_list(t_list *list);
 t_list	*ft_lstlast(t_list *lst);
-t_list	*ft_lstget_last(t_list *list);
-
+int	find_content_len(t_list *list);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/09 17:45:08 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/10 17:11:59 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,23 @@ char	*get_next_line(int fd)
 {
 	static t_list	*list;
 	char			*char_read;
+	char			*line;
 
 	list = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &char_read, 0) < 0)
 		return (NULL);
-	// Create the list until the first '\n'
 	create_list(&list, fd);
+	line = put_line(list);
+
+	//create a node base on the rest of the last node
+	//clear the list
+
 	print_list(list);
 	return (NULL);
 }
 
-// function that calls create_list must call for the new_node to be the
-// created node.
+/* Function that search_for_newline, and if not create new node that is put
+at the end of the string with the content of buffer. */
 
 void	*create_list(t_list **list, int fd)
 {
@@ -54,78 +59,56 @@ void	*create_list(t_list **list, int fd)
 	return (0);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void *))
+char	*put_line(t_list *list)
 {
+	int		total_len;
+	int		i;
+	int		j;
+	char	*line;
 	t_list	*temp;
 
-	if (!*lst)
-		return ;
-	while (*lst)
-	{
-		temp = (*lst)->next;
-		ft_lstdelone((*lst), del);
-		(*lst) = temp;
-	}
-}
-
-int	search_for_newline(t_list *list)
-{
-	int		i;
-	t_list *temp;
-
-	temp = list;
-	i = 0;
-	if (!list)
-		return(0);
+	total_len = find_content_len(temp);
+	line = malloc(sizeof(char) * total_len + 1);
+	j = 0;
 	while (temp)
 	{
-		while (temp->content[i])
+		i = 0;
+		while (temp->content[i] && temp->content[i] != '\n')
 		{
-			if (temp->content[i] == '\n')
-			{
-				return (1);
-			}
+			line[j] = temp->content[i];
 			i++;
+			j++;
+		}
+		while (temp->content[i] == '\n')
+		{
+			line[j] = '\n';
+			j++;
 		}
 		temp = temp->next;
-		i = 0;
 	}
-	return (0);
+	return (line);
 }
-void	print_list(t_list *list)
+
+t_list	*create_next_list(t_list *lst)
 {
-	int	i;
 	t_list	*temp;
+	t_list	*new_node;
+	char	*next_content;
+	int		total_len;
+	int		content_len;
 
-	temp = list;
-	if (!list)
-		return ;
-	while(temp)
+	content_len = 0;
+	temp = lst;
+	ft_lstlast(temp);
+	if (!temp)
+		return (NULL);
+	total_len = find_content_len(temp);
+	while (temp->content[total_len] != '\n')
 	{
-		i = 0;
-		while (temp->content[i])
-		{
-			write(1, (char *)&(temp->content)[i], 1);
-			i++;
-		}
-		temp = temp->next;
+		total_len--;
+		content_len++;
 	}
-}
+	next_content = malloc(sizeof(char) * content_len + 1);
+	if (!next_content)
+		return(NULL);
 
-// main test
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-
-int	main(void)
-{
-	int	fd;
-	//char *line;
-
-	fd = open("test.txt", O_RDONLY);
-	if (fd == -1)
-		perror("Error returning file");
-	get_next_line(fd);
-	close (fd);
-}

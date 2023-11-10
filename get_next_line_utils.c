@@ -6,11 +6,13 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:12:04 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/09 17:39:07 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:12:12 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+/* Function that create a new node contening the content passes. */
 
 t_list	*ft_lstnew(char *content, int char_read)
 {
@@ -32,6 +34,8 @@ t_list	*ft_lstnew(char *content, int char_read)
 	return (lst);
 }
 
+/* Function that take the created node and put it at the end of the list. */
+
 void	ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list	*last;
@@ -47,20 +51,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 	}
 }
 
-void	ft_lstdelone(t_list *lst, void (*del)(void *))
-{
-	del(lst->content);
-	free(lst);
-}
-
-t_list	*ft_lstget_last(t_list *list)
-{
-	if (!list)
-		return (NULL);
-	while (list->next)
-		list = list->next;
-	return (list);
-}
+/* Function that find the last node. */
 
 t_list	*ft_lstlast(t_list *lst)
 {
@@ -69,4 +60,54 @@ t_list	*ft_lstlast(t_list *lst)
 	while (lst->next)
 		lst = lst->next;
 	return (lst);
+}
+
+/* Function that find the total len of the line. */
+
+int	find_content_len(t_list *list)
+{
+	t_list	*temp;
+	int		i;
+	int		total_len;
+
+	temp = list;
+	total_len = 0;
+	while (temp)
+	{
+		i = 0;
+		while (temp->content[i])
+		{
+			i++;
+			total_len++;
+		}
+		temp = temp->next;
+	}
+	return (total_len);
+}
+
+/* Function that search for a newline into every node of the linked list. */
+
+int	search_for_newline(t_list *list)
+{
+	int		i;
+	t_list *temp;
+
+	temp = list;
+	i = 0;
+	if (!list)
+		return(0);
+	while (temp)
+	{
+		while (temp->content[i])
+		{
+			if (temp->content[i] == '\n')
+			{
+				return (1);
+			}
+			i++;
+		}
+		temp = temp->next;
+		i = 0;
+	}
+	return (0);
 }
