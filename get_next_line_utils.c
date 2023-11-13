@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:12:04 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/10 14:12:12 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/13 16:03:49 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ t_list	*ft_lstnew(char *content, int char_read)
 
 /* Function that take the created node and put it at the end of the list. */
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
+void	ft_lstadd_back(t_list *lst, t_list *new)
 {
 	t_list	*last;
 
 	if (!lst)
 		return ;
-	if (!*lst)
-		(*lst) = new;
+	if (!lst)
+		lst = new;
 	else
 	{
-		last = ft_lstlast(*lst);
+		last = ft_lstlast(lst);
 		last->next = new;
 	}
 }
@@ -70,18 +70,26 @@ int	find_content_len(t_list *list)
 	int		i;
 	int		total_len;
 
-	temp = list;
+	if (!list)
+		return (0);
 	total_len = 0;
+	temp = list;
+	if (!temp)
+		return (0);
 	while (temp)
 	{
 		i = 0;
-		while (temp->content[i])
+		if (temp->content)
 		{
-			i++;
-			total_len++;
+			while (temp->content[i] != '\0')
+			{
+				i++;
+				total_len++;
+			}
 		}
 		temp = temp->next;
 	}
+	total_len++;
 	return (total_len);
 }
 
@@ -102,7 +110,7 @@ int	search_for_newline(t_list *list)
 		{
 			if (temp->content[i] == '\n')
 			{
-				return (1);
+				return (i);
 			}
 			i++;
 		}

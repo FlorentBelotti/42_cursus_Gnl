@@ -6,13 +6,14 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 13:23:24 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/10 14:11:43 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:50:28 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include "get_next_line.h"
 
 void	print_list(t_list *list)
 {
@@ -27,10 +28,25 @@ void	print_list(t_list *list)
 		i = 0;
 		while (temp->content[i])
 		{
-			write(1, (char *)&(temp->content)[i], 1);
+			if (temp->content[i] == '\0')
+				printf("Il y a un 0\n");
+			else
+				write(1, (char *)&(temp->content)[i], 1);
 			i++;
 		}
 		temp = temp->next;
+	}
+}
+
+void	print_line(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i])
+	{
+		write(1, &line[i], 1);
+		i++;
 	}
 }
 
