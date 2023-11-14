@@ -6,14 +6,12 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/13 16:13:37 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/14 12:09:09 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
-
-// Segfault dans next_node...
 
 char	*get_next_line(int fd)
 {
@@ -28,9 +26,9 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &char_read, 0) < 0)
 		return (NULL);
 
-	create_list(list, fd);
+	create_list(&list, fd);
 
-	line = put_line(list);
+	/* line = put_line(list);
 
 	if (BUFFER_SIZE > 1)
 	{
@@ -43,8 +41,8 @@ char	*get_next_line(int fd)
 	ft_lstclear(list);
 	ft_lstadd_back(list, ft_lstnew((void *)next_node, i + 1));
 	print_list(list);
-	write (1, "\n", 1);
-	print_line(next_node);
+	write (1, "\n", 1); */
+	print_list (list);
 	return (line);
 }
 
@@ -69,28 +67,28 @@ void	ft_lstclear(t_list *lst)
 /* Function that search_for_newline, and if not create new node that is put
 at the end of the string with the content of buffer. */
 
-void	*create_list(t_list *list, int fd)
+void	create_list(t_list **list, int fd)
 {
 	char	*buffer;
 	int		char_read;
 
 	char_read = 0;
-	while (!search_for_newline(list))
+	while (!search_for_newline(*list))
 	{
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!buffer)
-			return (0);
+			return ;
 		char_read = read(fd, buffer, BUFFER_SIZE + 1);
 		if ((!list && char_read == 0) || char_read == -1)
 		{
 			free(buffer);
-			return (NULL);
+			return ;
 		}
 		buffer[char_read] = '\0';
-		ft_lstadd_back(list, ft_lstnew((void *)buffer, char_read));
+		ft_lstadd_back(*list, ft_lstnew((void *)buffer, char_read));
 		free(buffer);
 	}
-	return (0);
+	return ;
 }
 
 /* Return a string with the content of my linked list. */
@@ -150,8 +148,11 @@ char	*next_node_content(t_list *lst)
 	t_list	*temp;
 
 	temp = lst;
+	if (!temp)
+		write (1, "8", 1);
 	m_len = 0;
 	i = 0;
+	newline_index = 0;
 	newline_index = search_for_newline(temp) + 1;
 	while (temp)
 	{

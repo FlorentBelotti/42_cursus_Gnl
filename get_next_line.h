@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:58 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/13 16:14:18 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/14 12:07:44 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_list {
 }	t_list;
 
 char	*get_next_line(int fd);
-void	*create_list(t_list *list, int fd);
+void	create_list(t_list **list, int fd);
 void	ft_lstclear(t_list *lst);
 int		search_for_newline(t_list *list);
 void	print_next_line(t_list *list);

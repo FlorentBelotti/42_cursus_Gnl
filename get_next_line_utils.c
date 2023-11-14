@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:12:04 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/13 16:03:49 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/14 15:13:02 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	search_for_newline(t_list *list)
 		{
 			if (temp->content[i] == '\n')
 			{
-				return (i);
+				return (1);
 			}
 			i++;
 		}
