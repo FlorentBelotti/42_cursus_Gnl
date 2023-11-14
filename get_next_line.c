@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/14 12:09:09 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/14 19:15:23 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,12 @@ char	*get_next_line(int fd)
 	char			*line;
 
 	i = 0;
+	line = NULL;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &char_read, 0) < 0)
 		return (NULL);
-
 	create_list(&list, fd);
-
-	/* line = put_line(list);
-
+	line = put_line(list);
 	if (BUFFER_SIZE > 1)
 	{
 		next_node = next_node_content(list);
@@ -39,10 +37,7 @@ char	*get_next_line(int fd)
 	else
 		next_node = NULL;
 	ft_lstclear(list);
-	ft_lstadd_back(list, ft_lstnew((void *)next_node, i + 1));
-	print_list(list);
-	write (1, "\n", 1); */
-	print_list (list);
+	ft_lstadd_back(&list, ft_lstnew((void *)next_node, i + 1));
 	return (line);
 }
 
@@ -85,7 +80,7 @@ void	create_list(t_list **list, int fd)
 			return ;
 		}
 		buffer[char_read] = '\0';
-		ft_lstadd_back(*list, ft_lstnew((void *)buffer, char_read));
+		ft_lstadd_back(list, ft_lstnew((void *)buffer, char_read));
 		free(buffer);
 	}
 	return ;
@@ -186,8 +181,8 @@ char	*next_node_content(t_list *lst)
 		i++;
 	}
 	next_line[i] = '\0';
-	if (next_line[i] == '\0')
-		printf("Il y a un 0\n");
+	//if (next_line[i] == '\0')
+		//printf("Il y a un 0\n");
 	return (next_line);
 }
 

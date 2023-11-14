@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 13:23:24 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/13 15:50:28 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/14 18:40:53 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,21 @@ void	print_line(char *line)
 
 int	main(void)
 {
-	int	fd;
+	int		fd;
+	char	*line;
 	//char *line;
 
+	line = NULL;
 	fd = open("test.txt", O_RDONLY);
 	if (fd == -1)
 		perror("Error returning file");
-	get_next_line(fd);
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (line == NULL)
+			break ;
+		printf("%s", line);
+	}
 	close (fd);
+	return (0);
 }
