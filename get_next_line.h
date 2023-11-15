@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:58 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/14 17:32:45 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:23:05 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <limits.h>
 
 typedef struct s_list {
 	char			*content;
@@ -27,18 +28,15 @@ typedef struct s_list {
 }	t_list;
 
 char	*get_next_line(int fd);
-void	create_list(t_list **list, int fd);
-void	ft_lstclear(t_list *lst);
+void	put_line(t_list *list, char **line);
 int		search_for_newline(t_list *list);
-void	print_next_line(t_list *list);
-t_list	*ft_lstnew(char *content, int char_read);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstdelone(t_list *lst, void (*del)(void *));
-t_list	*ft_lstlast(t_list *lst);
-char	*put_line(t_list *list);
-char	*next_node_content(t_list *lst);
-int		find_content_len(t_list *list);
-void	print_list(t_list *list);
-void	print_line(char *line);
+int		ft_strlen(const char *str);
+void	clean_list(t_list **list);
+void	create_list(t_list **list, int fd);
+void	malloc_of_line(char **line, t_list *list);
+void	free_list(t_list *list);
+static void	add_to_list(t_list **list, char *buffer, int char_read);
+int		main(void);
+t_list	*ft_lstlast(t_list *stash);
 
 #endif

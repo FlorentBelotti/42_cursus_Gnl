@@ -6,61 +6,64 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/14 19:15:23 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:30:35 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 char	*get_next_line(int fd)
 {
 	static t_list	*list;
-	int				i;
-	char			*next_node;
-	char			*char_read;
 	char			*line;
 
-	i = 0;
-	line = NULL;
-
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &char_read, 0) < 0)
+	list = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
 		return (NULL);
+	line = NULL;
 	create_list(&list, fd);
-	line = put_line(list);
-	if (BUFFER_SIZE > 1)
+	if (!list)
+		return (NULL);
+	put_line(list, &line);
+	clean_list(&list);
+	if (line[0] == '\0')
 	{
-		next_node = next_node_content(list);
-		while (next_node[i])
-			i++;
+		free_list(list);
+		list = NULL;
+		free(line);
+		return (NULL);
 	}
-	else
-		next_node = NULL;
-	ft_lstclear(list);
-	ft_lstadd_back(&list, ft_lstnew((void *)next_node, i + 1));
 	return (line);
 }
 
-void	ft_lstclear(t_list *lst)
+void	clean_list(t_list **list)
 {
-	t_list	*current;
-	t_list	*next;
+	t_list	*last;
+	t_list	*clean_node;
+	int		i;
+	int		j;
 
-	if (!lst)
+	clean_node = malloc(sizeof(t_list));
+	if (!list || !clean_node)
 		return ;
-	current = lst;
-	while (current)
-	{
-		next = current->next;
-		free(current->content);
-		free(current);
-		current = next;
-	}
-	lst = NULL;
+	clean_node->next = NULL;
+	last = ft_lstlast(*list);
+	i = 0;
+	while (last->content[i] && last->content[i] != '\n')
+		i++;
+	if (last->content && last->content[i] == '\n')
+		i++;
+	clean_node->content = malloc(sizeof(char) *
+				((ft_strlen(last->content) - i) + 1));
+	if (clean_node->content == NULL)
+		return ;
+	j = 0;
+	while (last->content[i])
+		clean_node->content[j++] = last->content[i++];
+	clean_node->content[j] = '\0';
+	free_list(*list);
+	*list = clean_node;
 }
-
-/* Function that search_for_newline, and if not create new node that is put
-at the end of the string with the content of buffer. */
 
 void	create_list(t_list **list, int fd)
 {
@@ -68,123 +71,77 @@ void	create_list(t_list **list, int fd)
 	int		char_read;
 
 	char_read = 0;
-	while (!search_for_newline(*list))
+	while (!search_for_newline(*list) && char_read != 0)
 	{
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!buffer)
 			return ;
-		char_read = read(fd, buffer, BUFFER_SIZE + 1);
+		char_read = (int)read(fd, buffer, BUFFER_SIZE + 1);
 		if ((!list && char_read == 0) || char_read == -1)
 		{
 			free(buffer);
 			return ;
 		}
 		buffer[char_read] = '\0';
-		ft_lstadd_back(list, ft_lstnew((void *)buffer, char_read));
+		add_to_list(list, buffer, char_read);
 		free(buffer);
 	}
-	return ;
 }
 
-/* Return a string with the content of my linked list. */
-
-char	*put_line(t_list *list)
+static void	add_to_list(t_list **list, char *buffer, int char_read)
 {
 	int		i;
-	int		j;
-	int		newline_index;
-	char	*line;
-	t_list	*temp;
+	t_list	*last;
+	t_list	*new_node;
 
-	j = 0;
-	temp = list;
-	newline_index = 0;
-	while (temp)
-	{
-		i = 0;
-		while (temp->content[i] != '\n')
-		{
-			i++;
-			newline_index++;
-		}
-		temp = temp->next;
-	}
-	line = malloc(sizeof(char) * (newline_index + 2));
-	if (!line)
-		return (NULL);
-	temp = list;
-	while (temp)
-	{
-		i = 0;
-		while (temp->content[i] != '\n' && temp->content[i])
-		{
-			line[j] = temp->content[i];
-			i++;
-			j++;
-		}
-		if (temp->content[i] == '\n')
-		{
-			line[j] = temp->content[i];
-			break ;
-		}
-		temp = temp->next;
-	}
-	return (line);
-}
-
-/* Create a node with the content of the last node of my linked list. */
-
-char	*next_node_content(t_list *lst)
-{
-	int		newline_index;
-	int		m_len;
-	int		i;
-	char	*next_line;
-	t_list	*temp;
-
-	temp = lst;
-	if (!temp)
-		write (1, "8", 1);
-	m_len = 0;
+	new_node = malloc(sizeof(t_list));
+	if (new_node == NULL)
+		return ;
+	new_node->next = NULL;
+	new_node->content = malloc(sizeof(char) * (char_read + 1));
+	if (new_node->content == NULL)
+		return ;
 	i = 0;
-	newline_index = 0;
-	newline_index = search_for_newline(temp) + 1;
-	while (temp)
+	while (buffer[i] && i < char_read)
 	{
-		i = 0;
-		while (temp->content[i])
-		{
-			if (temp->content[i] == '\n')
-			{
-				while (temp->content[m_len] != '\0')
-					m_len++;
-				break ;
-			}
-			i++;
-		}
-		if (m_len == 0)
-			temp = temp->next;
-		else
-			break ;
-	}
-	next_line = malloc (sizeof(char) * (m_len + 1));
-	i = 0;
-	if (temp->content[newline_index] == '\0')
-	{
-		next_line[i] = '\0';
-		return (next_line);
-	}
-	while (temp->content[newline_index] != '\0')
-	{
-		next_line[i] = temp->content[newline_index];
-		newline_index++;
+		new_node->content[i] = buffer[i];
 		i++;
 	}
-	next_line[i] = '\0';
-	//if (next_line[i] == '\0')
-		//printf("Il y a un 0\n");
-	return (next_line);
+	new_node->content[i] = '\0';
+	if (*list == NULL)
+	{
+		*list = new_node;
+		return ;
+	}
+	last = ft_lstlast(*list);
+	last->next = new_node;
 }
 
+void	put_line(t_list *list, char **line)
+{
+	int		j;
+	int		i;
 
-	// Go to temp->content[i] == '\n'
+	if (!list)
+		return ;
+	list = list;
+	malloc_of_line(line, list);
+	if (!line)
+		return ;
+	j = 0;
+	while (list)
+	{
+		i = 0;
+		while (list->content[i])
+		{
+			if (list->content[i] == '\n')
+			{
+				(*line)[j++] = list->content[i];
+				break;
+			}
+			(*line)[j++] = list->content[i++];
+		}
+		list = list->next;
+	}
+	(*line)[j] = '\0';
+}

@@ -6,114 +6,112 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:12:04 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/14 18:15:55 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:33:56 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/* Function that create a new node contening the content passes. */
-
-t_list	*ft_lstnew(char *content, int char_read)
-{
-	t_list	*lst;
-	int i;
-
-	lst = malloc(sizeof(t_list));
-	if (!lst)
-		return (0);
-	i = 0;
-	lst->content = malloc(sizeof(char) * (char_read + 1));
-	while (content[i] && i < char_read)
-	{
-		lst->content[i] = content[i];
-		i++;
-	}
-	lst->content[i] = '\0';
-	lst->next = NULL;
-	return (lst);
-}
-
-/* Function that take the created node and put it at the end of the list. */
-
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	t_list	*last;
-
-	if (!(*lst))
-		*lst = new;
-	else
-	{
-		last = ft_lstlast(*lst);
-		last->next = new;
-	}
-}
-
-/* Function that find the last node. */
-
-t_list	*ft_lstlast(t_list *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next)
-		lst = lst->next;
-	return (lst);
-}
-
-/* Function that find the total len of the line. */
-
-int	find_content_len(t_list *list)
-{
-	t_list	*temp;
-	int		i;
-	int		total_len;
-
-	if (!list)
-		return (0);
-	total_len = 0;
-	temp = list;
-	if (!temp)
-		return (0);
-	while (temp)
-	{
-		i = 0;
-		if (temp->content)
-		{
-			while (temp->content[i] != '\0')
-			{
-				i++;
-				total_len++;
-			}
-		}
-		temp = temp->next;
-	}
-	total_len++;
-	return (total_len);
-}
-
-/* Function that search for a newline into every node of the linked list. */
-
 int	search_for_newline(t_list *list)
 {
 	int		i;
-	t_list *temp;
+	t_list *last;
 
-	temp = list;
-	i = 0;
 	if (!list)
 		return(0);
-	while (temp)
+	last = ft_lstlast(list);
+	i = 0;
+	while (last->content[i])
 	{
-		while (temp->content[i])
-		{
-			if (temp->content[i] == '\n')
-			{
-				return (i);
-			}
-			i++;
-		}
-		temp = temp->next;
-		i = 0;
+		if (last->content[i] == '\n')
+			return (1);
+		i++;
 	}
 	return (0);
+}
+
+int	ft_strlen(const char *str)
+{
+	int	len;
+
+	len = 0;
+	while (*(str++))
+		len++;
+	return (len);
+}
+
+t_list	*ft_lstlast(t_list *list)
+{
+	t_list	*current;
+
+	current = list;
+	if (current == NULL)
+		return (current);
+	while (current->next)
+		current = current->next;
+	return (current);
+}
+
+void	free_list(t_list *list)
+{
+	t_list	*current;
+	t_list	*next;
+
+	current = list;
+	while (current)
+	{
+		free(current->content);
+		next = current->next;
+		free(current);
+		current = next;
+	}
+}
+
+static void	add_to_list(t_list **list, char *buffer, int char_read)
+{
+	int		i;
+	t_list	*last;
+	t_list	*new_node;
+
+	new_node = malloc(sizeof(t_list));
+	if (new_node == NULL)
+		return ;
+	new_node->next = NULL;
+	new_node->content = malloc(sizeof(char) * (char_read + 1));
+	if (new_node->content == NULL)
+		return ;
+	i = 0;
+	while (buffer[i] && i < char_read)
+	{
+		new_node->content[i] = buffer[i];
+		i++;
+	}
+	new_node->content[i] = '\0';
+	if (*list == NULL)
+	{
+		*list = new_node;
+		return ;
+	}
+	last = ft_lstlast(*list);
+	last->next = new_node;
+}
+
+void	malloc_of_line(char **line, t_list *list)
+{
+	int		newline_index;
+	int		i;
+
+	while (list)
+	{
+		i = 0;
+		while (list->content[i] != '\n' && list->content[i])
+		{
+			i++;
+			newline_index++;
+		}
+		if (list->content[i] == '\n')
+			newline_index++;
+		list = list->next;
+	}
+	line = malloc(sizeof(char) * (newline_index + 1)); //a voir
 }
