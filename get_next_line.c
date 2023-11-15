@@ -6,35 +6,11 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/15 17:30:35 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:43:03 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*get_next_line(int fd)
-{
-	static t_list	*list;
-	char			*line;
-
-	list = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
-		return (NULL);
-	line = NULL;
-	create_list(&list, fd);
-	if (!list)
-		return (NULL);
-	put_line(list, &line);
-	clean_list(&list);
-	if (line[0] == '\0')
-	{
-		free_list(list);
-		list = NULL;
-		free(line);
-		return (NULL);
-	}
-	return (line);
-}
 
 void	clean_list(t_list **list)
 {
@@ -53,8 +29,8 @@ void	clean_list(t_list **list)
 		i++;
 	if (last->content && last->content[i] == '\n')
 		i++;
-	clean_node->content = malloc(sizeof(char) *
-				((ft_strlen(last->content) - i) + 1));
+	clean_node->content = malloc(sizeof(char)
+			* ((ft_strlen(last->content) - i) + 1));
 	if (clean_node->content == NULL)
 		return ;
 	j = 0;
@@ -63,29 +39,6 @@ void	clean_list(t_list **list)
 	clean_node->content[j] = '\0';
 	free_list(*list);
 	*list = clean_node;
-}
-
-void	create_list(t_list **list, int fd)
-{
-	char	*buffer;
-	int		char_read;
-
-	char_read = 0;
-	while (!search_for_newline(*list) && char_read != 0)
-	{
-		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			return ;
-		char_read = (int)read(fd, buffer, BUFFER_SIZE + 1);
-		if ((!list && char_read == 0) || char_read == -1)
-		{
-			free(buffer);
-			return ;
-		}
-		buffer[char_read] = '\0';
-		add_to_list(list, buffer, char_read);
-		free(buffer);
-	}
 }
 
 static void	add_to_list(t_list **list, char *buffer, int char_read)
@@ -117,14 +70,36 @@ static void	add_to_list(t_list **list, char *buffer, int char_read)
 	last->next = new_node;
 }
 
+void	create_list(t_list **list, int fd)
+{
+	char	*buffer;
+	int		char_read;
+
+	char_read = 1;
+	while (!search_for_newline(*list) && char_read != 0)
+	{
+		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!buffer)
+			return ;
+		char_read = (int)read(fd, buffer, BUFFER_SIZE + 1);
+		if ((!list && char_read == 0) || char_read == -1)
+		{
+			free(buffer);
+			return ;
+		}
+		buffer[char_read] = '\0';
+		add_to_list(list, buffer, char_read);
+		free(buffer);
+	}
+}
+
 void	put_line(t_list *list, char **line)
 {
-	int		j;
-	int		i;
+	int	j;
+	int	i;
 
 	if (!list)
 		return ;
-	list = list;
 	malloc_of_line(line, list);
 	if (!line)
 		return ;
@@ -137,11 +112,35 @@ void	put_line(t_list *list, char **line)
 			if (list->content[i] == '\n')
 			{
 				(*line)[j++] = list->content[i];
-				break;
+				break ;
 			}
 			(*line)[j++] = list->content[i++];
 		}
 		list = list->next;
 	}
 	(*line)[j] = '\0';
+}
+
+char	*get_next_line(int fd)
+{
+	static t_list	*list;
+	char			*line;
+
+	list = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+		return (NULL);
+	line = NULL;
+	create_list(&list, fd);
+	if (!list)
+		return (NULL);
+	put_line(list, &line);
+	clean_list(&list);
+	if (line[0] == '\0')
+	{
+		free_list(list);
+		list = NULL;
+		free(line);
+		return (NULL);
+	}
+	return (line);
 }

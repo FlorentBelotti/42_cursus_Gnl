@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:12:04 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/15 17:33:56 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:03:20 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 int	search_for_newline(t_list *list)
 {
 	int		i;
-	t_list *last;
+	t_list	*last;
 
 	if (!list)
-		return(0);
+		return (0);
 	last = ft_lstlast(list);
 	i = 0;
 	while (last->content[i])
@@ -67,40 +67,12 @@ void	free_list(t_list *list)
 	}
 }
 
-static void	add_to_list(t_list **list, char *buffer, int char_read)
-{
-	int		i;
-	t_list	*last;
-	t_list	*new_node;
-
-	new_node = malloc(sizeof(t_list));
-	if (new_node == NULL)
-		return ;
-	new_node->next = NULL;
-	new_node->content = malloc(sizeof(char) * (char_read + 1));
-	if (new_node->content == NULL)
-		return ;
-	i = 0;
-	while (buffer[i] && i < char_read)
-	{
-		new_node->content[i] = buffer[i];
-		i++;
-	}
-	new_node->content[i] = '\0';
-	if (*list == NULL)
-	{
-		*list = new_node;
-		return ;
-	}
-	last = ft_lstlast(*list);
-	last->next = new_node;
-}
-
 void	malloc_of_line(char **line, t_list *list)
 {
 	int		newline_index;
 	int		i;
 
+	newline_index = 0;
 	while (list)
 	{
 		i = 0;
@@ -113,5 +85,5 @@ void	malloc_of_line(char **line, t_list *list)
 			newline_index++;
 		list = list->next;
 	}
-	line = malloc(sizeof(char) * (newline_index + 1)); //a voir
+	*line = malloc(sizeof(char) * (newline_index + 1));
 }

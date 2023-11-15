@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 13:23:24 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/15 17:21:03 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:38:45 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	main(void)
 {
 	int		fd;
 	char	*line;
-	//char *line;
 
 	line = NULL;
 	fd = open("test.txt", O_RDONLY);
@@ -31,6 +30,7 @@ int	main(void)
 			break ;
 		printf("%s", line);
 	}
+	free (line);
 	close (fd);
 	return (0);
 }
