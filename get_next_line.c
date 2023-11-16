@@ -6,39 +6,63 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/15 18:43:03 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:44:24 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <string.h>
 
 void	clean_list(t_list **list)
 {
 	t_list	*last;
-	t_list	*clean_node;
+	t_list	*next_node;
 	int		i;
 	int		j;
 
-	clean_node = malloc(sizeof(t_list));
-	if (!list || !clean_node)
+	next_node = malloc(sizeof(t_list));
+	if (next_node == NULL || list == NULL)
 		return ;
-	clean_node->next = NULL;
+	next_node->next = NULL;
 	last = ft_lstlast(*list);
 	i = 0;
 	while (last->content[i] && last->content[i] != '\n')
 		i++;
 	if (last->content && last->content[i] == '\n')
 		i++;
-	clean_node->content = malloc(sizeof(char)
+	next_node->content = malloc(sizeof(char)
 			* ((ft_strlen(last->content) - i) + 1));
-	if (clean_node->content == NULL)
+	if (next_node->content == NULL)
+	{
+		free(next_node);
 		return ;
+	}
 	j = 0;
 	while (last->content[i])
-		clean_node->content[j++] = last->content[i++];
-	clean_node->content[j] = '\0';
+		next_node->content[j++] = last->content[i++];
+	next_node->content[j] = '\0';
 	free_list(*list);
-	*list = clean_node;
+	*list = next_node;
+}
+
+char	*ft_strdup(const char *s1)
+{
+	int		i;
+	char	*dest;
+
+	i = 0;
+	dest = (char *)malloc(ft_strlen(s1) + 1);
+	if (dest == NULL)
+	{
+		return (NULL);
+	}
+	while (s1[i])
+	{
+		dest[i] = s1[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
 }
 
 static void	add_to_list(t_list **list, char *buffer, int char_read)
@@ -81,10 +105,12 @@ void	create_list(t_list **list, int fd)
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (!buffer)
 			return ;
-		char_read = (int)read(fd, buffer, BUFFER_SIZE + 1);
-		if ((!list && char_read == 0) || char_read == -1)
+		char_read = (int)read(fd, buffer, BUFFER_SIZE);
+		if ((char_read == 0) || char_read == -1)
 		{
+			if (!list)
 			free(buffer);
+			free_list(*list);
 			return ;
 		}
 		buffer[char_read] = '\0';
@@ -131,7 +157,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = NULL;
 	create_list(&list, fd);
-	if (!list)
+	if (list == NULL)
 		return (NULL);
 	put_line(list, &line);
 	clean_list(&list);

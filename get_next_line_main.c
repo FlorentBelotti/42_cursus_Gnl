@@ -6,7 +6,7 @@
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 13:23:24 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/15 18:38:45 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:45:02 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	main(void)
 		line = get_next_line(fd);
 		if (line == NULL)
 			break ;
-		printf("%s", line);
+		//printf("%s", line);
+		free (line);
 	}
 	free (line);
 	close (fd);
