@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbelotti <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:11:12 by fbelotti          #+#    #+#             */
-/*   Updated: 2023/11/17 17:16:08 by fbelotti         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:16:45 by fbelotti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <string.h>
 
 void	clean_list(t_list **list)
@@ -124,21 +124,21 @@ void	put_line(t_list *list, char **line)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*list;
+	static t_list	*list[4096];
 	char			*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) == -1)
-		return (free(list), list = NULL, NULL);
+		return (free(list[fd]), list[fd] = NULL, NULL);
 	line = NULL;
-	create_list(&list, fd);
-	if (list == NULL)
+	create_list(&list[fd], fd);
+	if (list[fd] == NULL)
 		return (NULL);
-	put_line(list, &line);
-	clean_list(&list);
+	put_line(list[fd], &line);
+	clean_list(&list[fd]);
 	if (line[0] == '\0')
 	{
-		free_list(list);
-		list = NULL;
+		free_list(list[fd]);
+		list[fd] = NULL;
 		free(line);
 		return (NULL);
 	}
