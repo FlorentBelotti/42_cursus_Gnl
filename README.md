@@ -6,7 +6,7 @@
 </head>
 <body>
     <header>
-        <h1>get_next_line</h1>
+        <h1>42_cursus_get_next_line</h1>
         <p>A function to read a line from a file descriptor, line by line.</p>
     </header>
     <section>
