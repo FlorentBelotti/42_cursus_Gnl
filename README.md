@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>42_cursus_get_next_line</title>
 </head>
 <body>
     <header>
         <h1>42_cursus_get_next_line</h1>
         <p>A function to read a line from a file descriptor, line by line.</p>
     </header>
-
     <nav>
         <h2>Table of Contents</h2>
         <ul>
@@ -22,12 +20,10 @@
             <li><a href="#compilation">Compilation</a></li>
         </ul>
     </nav>
-
     <section id="introduction">
         <h2>Introduction</h2>
         <p>This project aims to develop a function that returns a line read from a file descriptor. It will help you learn about static variables in C and add a useful function to your collection.</p>
     </section>
-
     <section id="common-instructions">
         <h2>Common Instructions</h2>
         <ul>
@@ -38,7 +34,6 @@
             <li>The Makefile must contain at least the rules: <code>$(NAME)</code>, <code>all</code>, <code>clean</code>, <code>fclean</code>, and <code>re</code>.</li>
         </ul>
     </section>
-
     <section id="mandatory-part">
         <h2>Mandatory Part</h2>
         <p>Implement the function <code>get_next_line()</code> that reads a line from a file descriptor.</p>
@@ -51,7 +46,6 @@
             <li><strong>External functions allowed:</strong> <code>read</code>, <code>malloc</code>, <code>free</code></li>
         </ul>
     </section>
-
     <section id="details">
         <h3>Details</h3>
         <ul>
@@ -62,7 +56,6 @@
             <li>Your program must compile with the option <code>-D BUFFER_SIZE=n</code> to specify the buffer size for read() calls.</li>
         </ul>
     </section>
-
     <section id="bonus-part">
         <h2>Bonus Part</h2>
         <p>For those who complete the mandatory part perfectly, you can implement the following bonuses:</p>
@@ -77,10 +70,10 @@
             <li><code>get_next_line_utils_bonus.c</code></li>
         </ul>
     </section>
-
     <section id="compilation">
         <h2>Compilation</h2>
         <p>Compile the library using the Makefile provided, ensuring all rules like <code>all</code>, <code>clean</code>, <code>fclean</code>, and <code>re</code> are present to manage the library properly.</p>
     </section>
 </body>
 </html>
+
