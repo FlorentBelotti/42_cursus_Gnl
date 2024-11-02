@@ -16,7 +16,6 @@
     <li><a href="#Mandatory Part">Mandatory Part</a></li>
     <li><a href="#Details">Details</a></li>
     <li><a href="#Bonus Part">Bonus Part</a></li>
-    <li><a href="#Compilation">Compilation</a></li>
 </ul>
 </nav>
 
